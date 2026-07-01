@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { isStaticMode } from "@/lib/config";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -26,6 +27,22 @@ export default function RootLayout({
             >
               Add Product
             </Link>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/products"
+                className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
+              >
+                Products
+              </Link>
+              {!isStaticMode && (
+                <Link
+                  href="/plans/new"
+                  className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 transition-colors"
+                >
+                  New Plan
+                </Link>
+              )}
+            </div>
           </nav>
         </header>
         <main className="max-w-5xl mx-auto px-4 py-8">{children}</main>

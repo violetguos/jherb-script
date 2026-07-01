@@ -3,6 +3,11 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { deleteProduct } from "@/lib/actions";
 
+export async function generateStaticParams() {
+  const products = await prisma.product.findMany({ select: { id: true } });
+  return products.map((product) => ({ id: String(product.id) }));
+}
+
 export default async function ProductPage({
   params,
 }: {
