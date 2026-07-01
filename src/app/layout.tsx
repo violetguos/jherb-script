@@ -3,8 +3,8 @@ import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Marketplace",
-  description: "Simple CRUD marketplace prototype",
+  title: "Supplement Shop",
+  description: "Curated supplement collections",
 };
 
 export default function RootLayout({
@@ -18,14 +18,22 @@ export default function RootLayout({
         <header className="bg-white border-b border-gray-200">
           <nav className="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
             <Link href="/" className="text-xl font-bold tracking-tight">
-              Marketplace
+              Supplement Shop
             </Link>
-            <Link
-              href="/products/new"
-              className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 transition-colors"
-            >
-              Add Product
-            </Link>
+            <div className="flex items-center gap-4">
+              <Link
+                href="/products"
+                className="text-sm text-gray-500 hover:text-gray-900 transition-colors"
+              >
+                Products
+              </Link>
+              <Link
+                href="/plans/new"
+                className="rounded-lg bg-black px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 transition-colors"
+              >
+                New Plan
+              </Link>
+            </div>
           </nav>
         </header>
         <main className="max-w-5xl mx-auto px-4 py-8">{children}</main>

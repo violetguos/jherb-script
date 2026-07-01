@@ -7,12 +7,22 @@ datasource db {
   provider = "sqlite"
 }
 
+model Plan {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
 model Product {
   id          Int      @id @default(autoincrement())
   name        String
   description String
   price       Float
   imageUrl    String?
+  plans       Plan[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
