@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { prisma } from "@/lib/prisma";
-import { deletePlan } from "@/lib/actions";
+import { isStaticMode } from "@/lib/config";
+
+export async function generateStaticParams() {
+  const plans = await prisma.plan.findMany({ select: { id: true } });
+  return plans.map((plan) => ({ id: String(plan.id) }));
+}
 
 export default async function PlanPage({
   params,
@@ -17,7 +23,6 @@ export default async function PlanPage({
   if (!plan) notFound();
 
   const total = plan.products.reduce((s, p) => s + p.price, 0);
-  const deleteWithId = deletePlan.bind(null, plan.id);
 
   return (
     <div>
@@ -36,22 +41,11 @@ export default async function PlanPage({
             {plan.products.length} products &middot; ${total.toFixed(2)} total
           </p>
         </div>
-        <div className="flex gap-2 shrink-0">
-          <Link
-            href={`/plans/${plan.id}/edit`}
-            className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium hover:bg-gray-100 transition-colors"
-          >
-            Edit
-          </Link>
-          <form action={deleteWithId}>
-            <button
-              type="submit"
-              className="rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 transition-colors"
-            >
-              Delete
-            </button>
-          </form>
-        </div>
+        {!isStaticMode && (
+          <Suspense fallback={null}>
+            <PlanActionsWrapper planId={plan.id} />
+          </Suspense>
+        )}
       </div>
 
       {plan.products.length === 0 ? (
@@ -86,4 +80,9 @@ export default async function PlanPage({
       )}
     </div>
   );
+}
+
+async function PlanActionsWrapper({ planId }: { planId: number }) {
+  const { default: PlanActions } = await import("./plan-actions");
+  return <PlanActions planId={planId} />;
 }
